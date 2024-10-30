@@ -10,8 +10,27 @@ git checkout -b rule-set || git checkout rule-set
 # 确保下载目录存在
 mkdir -p "$download_dir"
 
+# 初始化分页
+page=1
+srs_files=()
+
+# 循环获取所有 .srs 文件
+while : ; do
+    response=$(curl -s "https://api.github.com/repos/SagerNet/sing-geosite/contents/rule-set?per_page=100&page=$page")
+    files=$(echo "$response" | jq -r '.[].name | select(endswith(".srs"))')
+    
+    # 如果没有更多文件，则退出循环
+    if [ -z "$files" ]; then
+        break
+    fi
+    
+    # 将获取到的文件添加到数组
+    srs_files+=($files)
+    ((page++))
+done
+
 # 循环处理所有 .srs 文件
-for srs_file in $(curl -s https://api.github.com/repos/SagerNet/sing-geosite/contents?ref=rule-set | jq -r '.[].name' | grep '\.srs$'); do
+for srs_file in "${srs_files[@]}"; do
     echo "Processing $srs_file..."
 
     # 下载 .srs 文件
