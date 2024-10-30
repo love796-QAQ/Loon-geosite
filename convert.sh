@@ -20,6 +20,9 @@ for srs_file in $(curl -s https://api.github.com/repos/SagerNet/sing-geosite/con
     temp_output_file="temp_output.json"
     sing-box rule-set decompile --output "$temp_output_file" "$local_srs_file"
 
+    # 检查生成的 JSON 内容
+    cat "$temp_output_file"  # 输出内容以调试
+
     # 获取原文件名（不带后缀）
     filename="${srs_file%.srs}"
     final_output_file="${filename}.txt"
