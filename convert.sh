@@ -59,5 +59,11 @@ for srs_file in $(curl -s https://api.github.com/repos/SagerNet/sing-geosite/con
     git commit -m "Update $final_output_file with domains and suffixes"
 done
 
+# 删除除 .txt 文件外的所有文件
+find . -type f ! -name "*.txt" -exec rm -f {} +
+
+# 删除空文件夹
+find . -type d -empty -exec rmdir {} +
+
 # 推送更改
 git push origin rule-set
