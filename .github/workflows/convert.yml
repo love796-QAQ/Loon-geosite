@@ -15,6 +15,9 @@ jobs:
         with:
           ref: main  # 检出 main 分支
 
+      - name: List branches
+        run: git branch -a  # 列出所有本地和远程分支
+
       - name: Delete existing rule-set branch
         run: |
           git fetch origin
