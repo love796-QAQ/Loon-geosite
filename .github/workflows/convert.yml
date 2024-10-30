@@ -52,6 +52,7 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then  # 检查是否有变更
             git add .
             git commit -m "Update converted files"
+            git pull origin rule-set --rebase  # 拉取远程更改并与本地更改合并
             git push origin rule-set
           else
             echo "No changes to commit."
