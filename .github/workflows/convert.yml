@@ -40,3 +40,15 @@ jobs:
 
       - name: Execute convert.sh
         run: ./convert.sh  # 执行脚本
+
+      - name: Create rule-set branch if it doesn't exist
+        run: |
+          git checkout -b rule-set || git checkout rule-set  # 创建或切换到 rule-set 分支
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+      - name: Commit and push changes
+        run: |
+          git add .
+          git commit -m "Update converted files"
+          git push origin rule-set
