@@ -44,8 +44,8 @@ jobs:
       - name: Create rule-set branch if it doesn't exist
         run: |
           git checkout -b rule-set || git checkout rule-set  # 创建或切换到 rule-set 分支
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+          git config user.name "love796-QAQ"
+          git config user.email "wangshuo523@outlook.com"
 
       - name: Commit and push changes
         run: |
