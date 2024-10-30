@@ -19,7 +19,14 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install jq
-          curl -L -o sing-box https://github.com/your-repo/sing-box/releases/latest/download/sing-box-linux-amd64
+
+          # 获取最新的 sing-box 版本
+          latest_version=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r .tag_name)
+          download_url="https://github.com/SagerNet/sing-box/releases/download/$latest_version/sing-box-${latest_version#v}-linux-amd64.tar.gz"
+
+          # 下载并安装 sing-box
+          curl -L -o sing-box.tar.gz "$download_url"
+          tar -xzf sing-box.tar.gz
           chmod +x sing-box
           mv sing-box /usr/local/bin/
 
