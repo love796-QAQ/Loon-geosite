@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout main branch
-        uses: actions/checkout@v3.2.0
+        uses: actions/checkout@v4
         with:
           ref: main  # 检出 main 分支
 
