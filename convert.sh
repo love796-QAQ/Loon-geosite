@@ -3,12 +3,15 @@
 # 设置变量
 base_url="https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set"
 
-# 获取 .srs 文件列表并调试输出
-response=$(curl -s https://api.github.com/repos/SagerNet/sing-geosite/contents/rule-set)
-echo "$response" | jq .  # 打印返回的 JSON，帮助调试
-
 # 循环处理所有 .srs 文件
-for srs_file in $(echo "$response" | jq -r '.[].name' | grep '\.srs$'); do
+srs_files=$(curl -s https://api.github.com/repos/SagerNet/sing-geosite/contents/rule-set | jq -r '.[].name' | grep '\.srs$')
+
+if [ -z "$srs_files" ]; then
+    echo "No .srs files found."
+    exit 1
+fi
+
+for srs_file in $srs_files; do
     echo "Processing $srs_file..."
 
     # 下载 .srs 文件
@@ -25,15 +28,15 @@ for srs_file in $(echo "$response" | jq -r '.[].name' | grep '\.srs$'); do
     final_output_file="${filename}.txt"
 
     # 格式化输出并保存到最终文件
-    jq -r '.rules[] | .domain[]? | "DOMAIN, \(. )" 
-          , .rules[] | .domain_suffix[]? | "DOMAIN-SUFFIX, \(. )"' "$temp_output_file" > "$final_output_file"
+    jq -r '.rules[] | .domain[] | "DOMAIN, \(. )" 
+          , .rules[] | .domain_suffix[] | "DOMAIN-SUFFIX, \(. )"' "$temp_output_file" > "$final_output_file"
 
     # 清理临时文件
     rm "$temp_output_file"
     rm "$local_srs_file"  # 删除本地下载的 .srs 文件
 
-    # 确保切换到 rule-set 分支
-    git checkout rule-set || git checkout -b rule-set
+    # 切换到 rule-set 分支
+    git checkout rule-set
 
     # 添加最终输出文件到 Git
     git add "$final_output_file"
