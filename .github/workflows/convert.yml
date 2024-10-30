@@ -11,14 +11,14 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4  # 更新为 v3.2.0 或更高版本
+        uses: actions/checkout@v4
         with:
-          ref: rule-set  # 确保在 rule-set 分支上
+          ref: rule-set
 
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install jq
+          sudo apt-get install -y jq
 
           # 获取最新的 sing-box 版本
           latest_version=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r .tag_name)
@@ -27,6 +27,7 @@ jobs:
           # 下载并安装 sing-box
           curl -L -o sing-box.tar.gz "$download_url"
           tar -xzf sing-box.tar.gz
+          ls -l  # 列出当前目录的文件以进行调试
           chmod +x sing-box
           mv sing-box /usr/local/bin/
 
