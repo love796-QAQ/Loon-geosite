@@ -1,66 +1,59 @@
-name: Convert All SRS to TXT
+name: Convert SRS to TXT
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # 每天午夜运行
+    - cron: '0 0 * * *'  # 每天运行一次（UTC 时间）
   workflow_dispatch:
 
 jobs:
-  convert:
+  convert-srs-to-txt:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout main branch
-        uses: actions/checkout@v4
-        with:
-          ref: main  # 检出 main 分支
+    - name: Checkout rule-set branch
+      uses: actions/checkout@v3
+      with:
+        ref: rule-set
 
-      - name: Fetch all branches
-        run: |
-          git fetch --all
+    - name: Install jq
+      run: sudo apt-get install -y jq
 
-      - name: Delete existing rule-set branch
-        run: |
-          git fetch origin
-          git branch -D rule-set || echo "rule-set branch does not exist"
+    - name: Download latest sing-box
+      run: |
+        wget https://github.com/SagerNet/sing-box/releases/download/v1.10.1/sing-box-1.10.1-linux-amd64.tar.gz -O sing-box.tar.gz
+        tar -zxvf sing-box.tar.gz
+        chmod +x sing-box
 
-      - name: Create rule-set branch
-        run: |
-          git checkout -b rule-set || git checkout rule-set  # 创建或切换到 rule-set 分支
-          git config user.name "love796-QAQ"
-          git config user.email "wangshuo523@outlook.com"
+    - name: Convert .srs files to .txt
+      run: |
+        # 创建转换输出的目录
+        mkdir -p converted_txt
+        for srs_file in *.srs; do
+          # 临时 .json 文件名
+          temp_output_file="temp_output.json"
+          # 最终输出的 .txt 文件名
+          final_output_file="converted_txt/${srs_file%.srs}.txt"
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
+          # 使用 sing-box 进行转换
+          ./sing-box rule-set decompile --output "$temp_output_file" "$srs_file"
 
-          # 获取最新的 sing-box 版本
-          latest_version=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r .tag_name)
-          download_url="https://github.com/SagerNet/sing-box/releases/download/$latest_version/sing-box-${latest_version#v}-linux-amd64.tar.gz"
+          # 使用 jq 格式化输出
+          jq -r '
+            .rules[] |
+            (.domain_suffix // empty | if type == "array" then .[] | "DOMAIN-SUFFIX, \(.)" else "DOMAIN-SUFFIX, \(.)" end) // empty,
+            (.domain // empty | if type == "array" then .[] | "DOMAIN, \(.)" else "DOMAIN, \(.)" end) // empty
+          ' "$temp_output_file" > "$final_output_file"
 
-          # 下载并安装 sing-box
-          curl -L -o sing-box.tar.gz "$download_url"
-          tar -xzf sing-box.tar.gz  # 解压所有文件
-          mv "sing-box-${latest_version#v}-linux-amd64/sing-box" /usr/local/bin/  # 移动到可执行路径
+          # 清理临时 .json 文件
+          rm "$temp_output_file"
+        done
 
-      - name: List files
-        run: ls -l  # 列出当前目录的文件以进行调试
-
-      - name: Make convert.sh executable
-        run: chmod +x ./convert.sh  # 确保 convert.sh 可执行
-
-      - name: Execute convert.sh
-        run: ./convert.sh  # 执行脚本
-
-      - name: Clean up and commit changes
-        run: |
-          rm -rf *  # 删除当前目录下的所有文件和文件夹
-          
-          if [ -n "$(git status --porcelain)" ]; then  # 检查是否有变更
-            git add .
-            git commit -m "Update converted files"
-            git push --force origin rule-set  # 强制推送更改
-          else
-            echo "No changes to commit."
-          fi
+    - name: Push changes
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add converted_txt/*.txt
+        git commit -m "Convert .srs files to .txt"
+        git push -f origin rule-set
