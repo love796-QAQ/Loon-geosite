@@ -4,7 +4,7 @@
 base_url="https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set"
 
 # 获取 rule-set 分支中的 .srs 文件列表
-srs_files=$(curl -s "https://api.github.com/repos/SagerNet/sing-geosite/contents/rule-set?ref=rule-set" | jq -r '.[] | select(.name | endswith(".srs")) | .name')
+srs_files=$(curl -s "https://api.github.com/repos/SagerNet/sing-geosite/contents?ref=rule-set" | jq -r '.[] | select(.name | endswith(".srs")) | .name')
 
 # 检查是否找到了 .srs 文件
 if [[ -z "$srs_files" ]]; then
