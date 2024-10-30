@@ -24,8 +24,7 @@ jobs:
         download_url="https://github.com/SagerNet/sing-box/releases/download/$latest_version/sing-box-${latest_version#v}-linux-amd64.tar.gz"
         curl -L -o sing-box.tar.gz "$download_url"
         tar -zxvf sing-box.tar.gz
-        mv "sing-box-${latest_version#v}-linux-amd64/sing-box" ./
-        chmod +x sing-box
+        mv "sing-box-${latest_version#v}-linux-amd64/sing-box" /usr/local/bin/  # 移动到可执行路径
 
     - name: Convert .srs files to .txt
       run: |
@@ -38,7 +37,7 @@ jobs:
           final_output_file="converted_txt/${srs_file%.srs}.txt"
 
           # 使用 sing-box 进行转换
-          ./sing-box rule-set decompile --output "$temp_output_file" "$srs_file"
+          sing-box rule-set decompile --output "$temp_output_file" "$srs_file"
 
           # 使用 jq 格式化输出
           jq -r '
