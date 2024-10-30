@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout rule-set branch
-      uses: actions/checkout@v3
-      with:
-        ref: rule-set
+    - name: Clone SagerNet/sing-geosite rule-set branch
+      run: |
+        git clone --branch rule-set --depth 1 https://github.com/SagerNet/sing-geosite.git
+        cd sing-geosite
 
     - name: Install jq
       run: sudo apt-get install -y jq
