@@ -49,6 +49,10 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          git add .
-          git commit -m "Update converted files"
-          git push origin rule-set
+          if [ -n "$(git status --porcelain)" ]; then  # 检查是否有变更
+            git add .
+            git commit -m "Update converted files"
+            git push origin rule-set
+          else
+            echo "No changes to commit."
+          fi
