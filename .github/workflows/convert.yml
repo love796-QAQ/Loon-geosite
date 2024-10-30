@@ -50,8 +50,6 @@ jobs:
           # 清理临时 .json 文件
           rm "$temp_output_file"
         done
-        cd converted_txt
-        cat geosite-0x0.txt
 
     - name: Push changes
       env:
@@ -62,8 +60,8 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git config --global init.defaultBranch main
-        cd loon-geosite
+        cd loon-geosite/sing-geosite/converted_txt
         ls
-        git add loon-geosite/sing-geosite/converted_txt/*.txt
+        git add sing-geosite/converted_txt/*.txt
         git commit -m "Convert .srs files to .txt"
         git push -f origin rule-set
