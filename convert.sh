@@ -1,42 +1,21 @@
 #!/bin/bash
 
-# 设置变量
-base_url="https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set"
-download_dir="$HOME/Downloads"
+# 克隆整个仓库
+repo_url="https://github.com/SagerNet/sing-geosite.git"
+download_dir="$HOME/Downloads/sing-geosite"
 
-# 切换到 rule-set 分支（如果不存在，则创建）
-git checkout -b rule-set || git checkout rule-set
+# 克隆指定分支
+git clone --branch rule-set "$repo_url" "$download_dir"
 
-# 确保下载目录存在
-mkdir -p "$download_dir"
+# 切换到下载目录
+cd "$download_dir" || exit
 
-# 初始化分页
-page=1
-srs_files=()
-
-# 循环获取所有 .srs 文件
-while : ; do
-    response=$(curl -s "https://api.github.com/repos/SagerNet/sing-geosite/contents/rule-set?per_page=100&page=$page")
-    files=$(echo "$response" | jq -r '.[].name | select(endswith(".srs"))')
-    
-    # 如果没有更多文件，则退出循环
-    if [ -z "$files" ]; then
-        break
-    fi
-    
-    # 将获取到的文件添加到数组
-    srs_files+=($files)
-    ((page++))
-done
+# 找到所有 .srs 文件
+srs_files=$(find . -name "*.srs")
 
 # 循环处理所有 .srs 文件
-for srs_file in "${srs_files[@]}"; do
+for srs_file in $srs_files; do
     echo "Processing $srs_file..."
-
-    # 下载 .srs 文件
-    full_url="$base_url/$srs_file"
-    local_srs_file="$download_dir/$srs_file"  # 本地保存路径
-    curl -L -o "$local_srs_file" "$full_url"  # 下载到本地
 
     # 使用 sing-box 进行转换
     temp_output_file="temp_output.json"
