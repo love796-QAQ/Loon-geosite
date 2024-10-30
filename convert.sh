@@ -32,25 +32,9 @@ for srs_file in $(curl -s https://api.github.com/repos/SagerNet/sing-geosite/con
 
     # 格式化输出并保存到最终文件
     jq -r '
-        .rules[] | 
-        if .domain_suffix then 
-            if type(.domain_suffix) == "array" then 
-                .domain_suffix[] | "DOMAIN-SUFFIX, \(.)"
-            else 
-                "DOMAIN-SUFFIX, \(.domain_suffix)"
-            end 
-        else 
-            empty 
-        end,
-        if .domain then 
-            if type(.domain) == "array" then 
-                .domain[] | "DOMAIN, \(.)"
-            else 
-                "DOMAIN, \(.domain)"
-            end 
-        else 
-            empty 
-        end
+      .rules[] | 
+      (.domain_suffix // empty | if type == "array" then .[] | "DOMAIN-SUFFIX, \(.)" else "DOMAIN-SUFFIX, \(.)" end) // empty,
+      (.domain // empty | if type == "array" then .[] | "DOMAIN, \(.)" else "DOMAIN, \(.)" end) // empty
     ' "$temp_output_file" > "$final_output_file"
 
     # 输出生成的 txt 文件内容
