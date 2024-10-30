@@ -31,8 +31,8 @@ for srs_file in $(curl -s https://api.github.com/repos/SagerNet/sing-geosite/con
     final_output_file="${filename}.txt"
 
     # 格式化输出并保存到最终文件
-    jq -r '.rules[] | .domain[]? | "DOMAIN, \(. )" 
-          , .rules[] | .domain_suffix[]? | "DOMAIN-SUFFIX, \(. )"' "$temp_output_file" > "$final_output_file"
+    jq -r '.rules[] | .domain // empty | "DOMAIN, \(.)" 
+          , .domain_suffix // empty | "DOMAIN-SUFFIX, \(.)"' "$temp_output_file" > "$final_output_file"
 
     # 输出生成的 txt 文件内容
     echo "Generated $final_output_file:"
