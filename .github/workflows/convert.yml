@@ -53,7 +53,6 @@ jobs:
       run: |
         cd sing-geosite
         rm *.srs
-        ls
 
     - name: Push changes
       env:
@@ -62,6 +61,12 @@ jobs:
         cd sing-geosite
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+        # 检查是否有需要删除的文件
+        if git ls-files --deleted | grep -q '.srs'; then
+          git add -u  # 更新 Git 索引，删除已删除的文件
+        fi
+        
         git add *.txt
         git commit -m "Convert .srs files to .txt"
         git push -f https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/love796-QAQ/loon-geosite.git rule-set || echo "Nothing to push"
