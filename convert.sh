@@ -13,8 +13,6 @@ mkdir -p "$download_dir"
 # 克隆指定分支
 git clone --branch rule-set "$repo_url" "$download_dir" || { echo "Failed to clone repository"; exit 1; }
 
-ls
-
 # 切换到下载目录
 cd "$download_dir" || { echo "Failed to enter directory"; exit 1; }
 
