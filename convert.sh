@@ -19,7 +19,7 @@ for srs_file in $srs_files; do
 
     # 使用 sing-box 进行转换
     temp_output_file="temp_output.json"
-    sing-box rule-set decompile --output "$temp_output_file" "$local_srs_file"
+    sing-box rule-set decompile --output "$temp_output_file" "$srs_file"
 
     # 检查生成的 JSON 内容
     cat "$temp_output_file"  # 输出内容以调试
