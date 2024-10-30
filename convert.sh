@@ -2,7 +2,13 @@
 
 # 克隆整个仓库
 repo_url="https://github.com/SagerNet/sing-geosite.git"
-download_dir="$HOME/Downloads/sing-geosite"
+download_dir="$HOME/Downloads"
+
+# 切换到 rule-set 分支（如果不存在，则创建）
+git checkout -b rule-set || git checkout rule-set
+
+# 确保下载目录存在
+mkdir -p "$download_dir"
 
 # 克隆指定分支
 git clone --branch rule-set "$repo_url" "$download_dir" || { echo "Failed to clone repository"; exit 1; }
