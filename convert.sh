@@ -57,4 +57,4 @@ find . -type f ! -name "*.txt" -exec rm -f {} +
 find . -type d -empty -exec rmdir {} +
 
 # 推送更改
-git push origin rule-set
+git push --force origin rule-set
