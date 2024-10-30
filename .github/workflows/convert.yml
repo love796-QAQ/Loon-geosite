@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout main branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3.2.0
         with:
           ref: main  # 检出 main 分支
 
@@ -32,11 +32,6 @@ jobs:
           mv sing-box /usr/local/bin/  # 移动到可执行路径
           cd ..  # 返回上级目录
 
-      - name: Check Token
-        run: |
-          echo "Token is: ${{ secrets.GIT }}"
-          curl -H "Authorization: token ${{ secrets.GIT }}" https://api.github.com/user
-
       - name: List files
         run: ls -l  # 列出当前目录的文件以进行调试
 
@@ -53,9 +48,11 @@ jobs:
           git config user.email "wangshuo523@outlook.com"
 
       - name: Commit and push changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GIT }}  # 将 Token 设置为环境变量
         run: |
-          git add .
-          git commit -m "Update converted files"
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/love796-QAQ/Loon-geosite.git rule-set  # 使用 Token 推送
+          if [ -n "$(git status --porcelain)" ]; then  # 检查是否有变更
+            git add .
+            git commit -m "Update converted files"
+            git push origin rule-set
+          else
+            echo "No changes to commit."
+          fi
