@@ -56,10 +56,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         cd sing-geosite
-        ls
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git config --global init.defaultBranch main
         git add converted_txt/*.txt
         git commit -m "Convert .srs files to .txt"
         git push -f origin rule-set
