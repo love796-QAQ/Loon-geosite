@@ -4,6 +4,9 @@
 base_url="https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set"
 download_dir="$HOME/Downloads"
 
+# 切换到 rule-set 分支（如果不存在，则创建）
+git checkout -b rule-set || git checkout rule-set
+
 # 确保下载目录存在
 mkdir -p "$download_dir"
 
