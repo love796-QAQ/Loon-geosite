@@ -50,6 +50,7 @@ jobs:
           # 清理临时 .json 文件
           rm "$temp_output_file"
         done
+        cd converted_txt
         ls
 
     - name: Push changes
