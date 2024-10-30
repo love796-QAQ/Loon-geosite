@@ -28,8 +28,8 @@ for srs_file in $(curl -s https://api.github.com/repos/SagerNet/sing-geosite/con
     final_output_file="${filename}.txt"
 
     # 格式化输出并保存到最终文件
-    jq -r '.rules[] | .domain[] | "DOMAIN, \(. )" 
-          , .rules[] | .domain_suffix[] | "DOMAIN-SUFFIX, \(. )"' "$temp_output_file" > "$final_output_file"
+    jq -r '.rules[] | .domain[]? | "DOMAIN, \(. )" 
+          , .rules[] | .domain_suffix[]? | "DOMAIN-SUFFIX, \(. )"' "$temp_output_file" > "$final_output_file"
 
     # 清理临时文件
     rm "$temp_output_file"
