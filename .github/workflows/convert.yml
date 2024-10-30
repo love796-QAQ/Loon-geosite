@@ -20,7 +20,9 @@ jobs:
 
     - name: Download latest sing-box
       run: |
-        wget https://github.com/SagerNet/sing-box/releases/download/v1.10.1/sing-box-1.10.1-linux-amd64.tar.gz -O sing-box.tar.gz
+        latest_version=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r .tag_name)
+        download_url="https://github.com/SagerNet/sing-box/releases/download/$latest_version/sing-box-${latest_version#v}-linux-amd64.tar.gz"
+        curl -L -o sing-box.tar.gz "$download_url"
         tar -zxvf sing-box.tar.gz
         chmod +x sing-box
 
