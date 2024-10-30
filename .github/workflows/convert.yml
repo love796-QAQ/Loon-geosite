@@ -28,8 +28,9 @@ jobs:
 
     - name: Convert .srs files to .txt
       run: |
+        cd sing-geosite
         # 创建转换输出的目录
-        mkdir -p converted_txt
+        mkdir -p ../converted_txt
         for srs_file in *.srs; do
           # 临时 .json 文件名
           temp_output_file="temp_output.json"
