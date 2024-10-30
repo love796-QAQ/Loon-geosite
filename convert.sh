@@ -47,10 +47,6 @@ for srs_file in $srs_files; do
       (.domain // empty | if type == "array" then .[] | "DOMAIN, \(.)" else "DOMAIN, \(.)" end) // empty
     ' "$temp_output_file" > "$final_output_file"
 
-    # 输出生成的 txt 文件内容
-    echo "Generated $final_output_file:"
-    cat "$final_output_file"
-
     # 清理临时文件
     rm "$temp_output_file"
     rm "$srs_file"  # 删除本地下载的 .srs 文件
