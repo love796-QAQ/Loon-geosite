@@ -21,9 +21,6 @@ for srs_file in $srs_files; do
     temp_output_file="temp_output.json"
     sing-box rule-set decompile --output "$temp_output_file" "$srs_file"
 
-    # 检查生成的 JSON 内容
-    cat "$temp_output_file"  # 输出内容以调试
-
     # 获取原文件名（不带后缀）
     filename="${srs_file%.srs}"
     final_output_file="${filename}.txt"
@@ -35,13 +32,9 @@ for srs_file in $srs_files; do
       (.domain // empty | if type == "array" then .[] | "DOMAIN, \(.)" else "DOMAIN, \(.)" end) // empty
     ' "$temp_output_file" > "$final_output_file"
 
-    # 输出生成的 txt 文件内容
-    echo "Generated $final_output_file:"
-    cat "$final_output_file"
-
     # 清理临时文件
     rm "$temp_output_file"
-    rm "$local_srs_file"  # 删除本地下载的 .srs 文件
+    rm "$srs_file"  # 删除本地下载的 .srs 文件
 
     # 切换到 rule-set 分支
     git checkout rule-set
