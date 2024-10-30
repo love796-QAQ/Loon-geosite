@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout main branch
         uses: actions/checkout@v3.2.0
         with:
-          ref: rule-set
+          ref: main  # 检出 main 分支
 
       - name: Install dependencies
         run: |
@@ -35,7 +35,8 @@ jobs:
       - name: List files
         run: ls -l  # 列出当前目录的文件以进行调试
 
-      - name: Convert SRS to TXT
-        run: |
-          chmod +x convert.sh
-          ./convert.sh
+      - name: Make convert.sh executable
+        run: chmod +x ./convert.sh  # 确保 convert.sh 可执行
+
+      - name: Execute convert.sh
+        run: ./convert.sh  # 执行脚本
