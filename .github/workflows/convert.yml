@@ -15,6 +15,11 @@ jobs:
         with:
           ref: main  # 检出 main 分支
 
+      - name: Delete existing rule-set branch
+        run: |
+          git fetch origin
+          git branch -D rule-set || echo "rule-set branch does not exist"
+
       - name: Install dependencies
         run: |
           sudo apt-get update
