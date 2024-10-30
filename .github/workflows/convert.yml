@@ -30,12 +30,12 @@ jobs:
       run: |
         cd sing-geosite
         # 创建转换输出的目录
-        mkdir -p ../converted_txt
+        mkdir -p converted_txt
         for srs_file in *.srs; do
           # 临时 .json 文件名
           temp_output_file="temp_output.json"
           # 最终输出的 .txt 文件名
-          final_output_file="../converted_txt/${srs_file%.srs}.txt"
+          final_output_file="converted_txt/${srs_file%.srs}.txt"
 
           # 使用 sing-box 进行转换
           sing-box rule-set decompile --output "$temp_output_file" "$srs_file"
@@ -60,6 +60,6 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git config --global init.defaultBranch main
-        git add ../converted_txt/*.txt
+        git add converted_txt/*.txt
         git commit -m "Convert .srs files to .txt"
         git push -f origin rule-set
