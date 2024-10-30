@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3.2.0
         with:
           ref: rule-set
 
@@ -26,10 +26,14 @@ jobs:
 
           # 下载并安装 sing-box
           curl -L -o sing-box.tar.gz "$download_url"
-          tar -xzf sing-box.tar.gz
-          ls -l  # 列出当前目录的文件以进行调试
-          chmod +x sing-box
-          mv sing-box /usr/local/bin/
+          tar -xzf sing-box.tar.gz  # 解压所有文件
+          cd "sing-box-${latest_version#v}-linux-amd64"  # 进入解压目录
+          chmod +x sing-box  # 确保可执行
+          mv sing-box /usr/local/bin/  # 移动到可执行路径
+          cd ..  # 返回上级目录
+
+      - name: List files
+        run: ls -l  # 列出当前目录的文件以进行调试
 
       - name: Convert SRS to TXT
         run: |
