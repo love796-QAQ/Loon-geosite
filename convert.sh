@@ -66,6 +66,9 @@ for srs_file in $srs_files; do
 
     # 提交更改
     git commit -m "Update $final_output_file with domains and suffixes"
+
+    # 推送更改，强制覆盖
+    git push --force origin rule-set
 done
 
 # 删除除 .txt 文件外的所有文件
@@ -73,6 +76,3 @@ find . -type f ! -name "*.txt" -exec rm -f {} +
 
 # 删除空文件夹
 find . -type d -empty -exec rmdir {} +
-
-# 推送更改，强制覆盖
-git push --force origin rule-set
