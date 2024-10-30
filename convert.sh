@@ -34,6 +34,10 @@ for srs_file in $(curl -s https://api.github.com/repos/SagerNet/sing-geosite/con
     jq -r '.rules[] | .domain[]? | "DOMAIN, \(. )" 
           , .rules[] | .domain_suffix[]? | "DOMAIN-SUFFIX, \(. )"' "$temp_output_file" > "$final_output_file"
 
+    # 输出生成的 txt 文件内容
+    echo "Generated $final_output_file:"
+    cat "$final_output_file"
+
     # 清理临时文件
     rm "$temp_output_file"
     rm "$local_srs_file"  # 删除本地下载的 .srs 文件
