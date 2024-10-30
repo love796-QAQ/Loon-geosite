@@ -19,13 +19,16 @@ jobs:
         run: |
           git fetch --all
 
-      - name: List branches
-        run: git branch -a  # 列出所有本地和远程分支
-
       - name: Delete existing rule-set branch
         run: |
           git fetch origin
           git branch -D rule-set || echo "rule-set branch does not exist"
+
+      - name: Create rule-set branch
+        run: |
+          git checkout -b rule-set || git checkout rule-set  # 创建或切换到 rule-set 分支
+          git config user.name "love796-QAQ"
+          git config user.email "wangshuo523@outlook.com"
 
       - name: Install dependencies
         run: |
@@ -39,10 +42,7 @@ jobs:
           # 下载并安装 sing-box
           curl -L -o sing-box.tar.gz "$download_url"
           tar -xzf sing-box.tar.gz  # 解压所有文件
-          cd "sing-box-${latest_version#v}-linux-amd64"  # 进入解压目录
-          chmod +x sing-box  # 确保可执行
-          mv sing-box /usr/local/bin/  # 移动到可执行路径
-          cd ..  # 返回上级目录
+          mv "sing-box-${latest_version#v}-linux-amd64/sing-box" /usr/local/bin/  # 移动到可执行路径
 
       - name: List files
         run: ls -l  # 列出当前目录的文件以进行调试
@@ -53,20 +53,14 @@ jobs:
       - name: Execute convert.sh
         run: ./convert.sh  # 执行脚本
 
-      - name: Create rule-set branch if it doesn't exist
+      - name: Clean up and commit changes
         run: |
-          git checkout -b rule-set || git checkout rule-set  # 创建或切换到 rule-set 分支
           rm -rf *  # 删除当前目录下的所有文件和文件夹
-          git config user.name "love796-QAQ"
-          git config user.email "wangshuo523@outlook.com"
-
-      - name: Commit and push changes
-        run: |
+          
           if [ -n "$(git status --porcelain)" ]; then  # 检查是否有变更
             git add .
             git commit -m "Update converted files"
-            git pull origin rule-set --rebase  # 拉取远程更改并与本地更改合并
-            git push origin rule-set
+            git push --force origin rule-set  # 强制推送更改
           else
             echo "No changes to commit."
           fi
