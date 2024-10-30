@@ -13,11 +13,18 @@ mkdir -p "$download_dir"
 # 克隆指定分支
 git clone --branch rule-set "$repo_url" "$download_dir" || { echo "Failed to clone repository"; exit 1; }
 
+ls
+
 # 切换到下载目录
 cd "$download_dir" || { echo "Failed to enter directory"; exit 1; }
 
+ls
+
 # 找到所有 .srs 文件
 srs_files=$(find . -name "*.srs")
+
+# 切换到 rule-set 分支（如果不存在，则创建）
+git checkout -b rule-set || git checkout rule-set
 
 # 循环处理所有 .srs 文件
 for srs_file in $srs_files; do
