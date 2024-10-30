@@ -24,6 +24,7 @@ jobs:
         download_url="https://github.com/SagerNet/sing-box/releases/download/$latest_version/sing-box-${latest_version#v}-linux-amd64.tar.gz"
         curl -L -o sing-box.tar.gz "$download_url"
         tar -zxvf sing-box.tar.gz
+        mv "sing-box-${latest_version#v}-linux-amd64/sing-box" ./
         chmod +x sing-box
 
     - name: Convert .srs files to .txt
