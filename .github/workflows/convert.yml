@@ -32,6 +32,11 @@ jobs:
           mv sing-box /usr/local/bin/  # 移动到可执行路径
           cd ..  # 返回上级目录
 
+      - name: Check Token
+        run: |
+          echo "Token is: ${{ secrets.GIT }}"
+          curl -H "Authorization: token ${{ secrets.GIT }}" https://api.github.com/user
+
       - name: List files
         run: ls -l  # 列出当前目录的文件以进行调试
 
