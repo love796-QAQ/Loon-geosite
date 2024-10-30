@@ -51,7 +51,7 @@ jobs:
           rm "$temp_output_file"
         done
         cd converted_txt
-        ls
+        cat geosite-0x0.txt
 
     - name: Push changes
       env:
