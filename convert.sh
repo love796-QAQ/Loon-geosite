@@ -5,7 +5,7 @@ repo_url="https://github.com/SagerNet/sing-geosite.git"
 download_dir="$HOME/Downloads/sing-geosite"
 
 # 克隆指定分支
-git clone --branch rule-set "$repo_url" "$download_dir"
+git clone --branch rule-set "$repo_url" "$download_dir" || { echo "Failed to clone repository"; exit 1; }
 
 # 切换到下载目录
 cd "$download_dir" || { echo "Failed to enter directory"; exit 1; }
@@ -15,6 +15,9 @@ if [ ! -d ".git" ]; then
     echo "Not a git repository. Exiting."
     exit 1
 fi
+
+# 输出当前工作目录
+echo "Current directory: $(pwd)"
 
 # 找到所有 .srs 文件
 srs_files=$(find . -name "*.srs")
