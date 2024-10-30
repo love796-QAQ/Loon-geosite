@@ -8,7 +8,13 @@ download_dir="$HOME/Downloads/sing-geosite"
 git clone --branch rule-set "$repo_url" "$download_dir"
 
 # 切换到下载目录
-cd "$download_dir" || exit
+cd "$download_dir" || { echo "Failed to enter directory"; exit 1; }
+
+# 检查当前目录是否为 Git 仓库
+if [ ! -d ".git" ]; then
+    echo "Not a git repository. Exiting."
+    exit 1
+fi
 
 # 找到所有 .srs 文件
 srs_files=$(find . -name "*.srs")
@@ -21,6 +27,12 @@ for srs_file in $srs_files; do
     temp_output_file="temp_output.json"
     sing-box rule-set decompile --output "$temp_output_file" "$srs_file"
 
+    # 检查生成的 JSON 内容
+    if [ ! -f "$temp_output_file" ]; then
+        echo "Error: $temp_output_file not created. Skipping $srs_file."
+        continue
+    fi
+
     # 获取原文件名（不带后缀）
     filename="${srs_file%.srs}"
     final_output_file="${filename}.txt"
@@ -32,12 +44,13 @@ for srs_file in $srs_files; do
       (.domain // empty | if type == "array" then .[] | "DOMAIN, \(.)" else "DOMAIN, \(.)" end) // empty
     ' "$temp_output_file" > "$final_output_file"
 
+    # 输出生成的 txt 文件内容
+    echo "Generated $final_output_file:"
+    cat "$final_output_file"
+
     # 清理临时文件
     rm "$temp_output_file"
     rm "$srs_file"  # 删除本地下载的 .srs 文件
-
-    # 切换到 rule-set 分支
-    git checkout rule-set
 
     # 设置 Git 用户身份
     git config user.name "love796-QAQ"
@@ -56,5 +69,5 @@ find . -type f ! -name "*.txt" -exec rm -f {} +
 # 删除空文件夹
 find . -type d -empty -exec rmdir {} +
 
-# 推送更改
+# 推送更改，强制覆盖
 git push --force origin rule-set
