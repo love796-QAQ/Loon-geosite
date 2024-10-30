@@ -53,6 +53,7 @@ jobs:
       run: |
         cd sing-geosite
         rm *.srs
+        ls
 
     - name: Push changes
       env:
