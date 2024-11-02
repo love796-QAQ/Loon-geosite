@@ -1,0 +1,8 @@
+DOMAIN-SUFFIX, byapis.com
+DOMAIN-SUFFIX, bybit.com
+DOMAIN-SUFFIX, bycbe.com
+DOMAIN-SUFFIX, bycsi.com
+DOMAIN-SUFFIX, bymj.io
+DOMAIN-SUFFIX, bytick.com
+DOMAIN, bybit-exchange.github.io
+DOMAIN, bybit.ada.support
